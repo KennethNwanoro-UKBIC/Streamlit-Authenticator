@@ -141,7 +141,12 @@ class MicrosoftModel:
                 st.rerun()
             token_json = self.decode_jwt(token_json['access_token'])
             keys = {'email', 'upn', 'family_name', 'given_name'}
-            return {key: token_json[key] for key in keys if key in token_json}
+            if 'email' in token_json:
+                return {key: token_json[key] for key in keys if key in token_json}
+            else:
+                token_json['email'] = token_json['unique_name']
+                return {key: token_json[key] for key in keys if key in token_json}
+                
             # user_info_url = 'https://graph.microsoft.com/v1.0/me'
             # user_info_headers = {
             #     "Authorization": f"Bearer {token_json['access_token']}"
