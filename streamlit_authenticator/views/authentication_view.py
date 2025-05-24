@@ -86,6 +86,8 @@ class Authenticate:
                                                                      self.secret_key,
                                                                      self.attrs.get('server_url'))
         self.encryptor = Encryptor(self.secret_key)
+        self.config = Helpers.read_config_file(credentials)
+        self.credentials = self.config['credentials']
     def forgot_password(self, location: Literal['main', 'sidebar'] = 'main',
                         fields: Optional[Dict[str, str]] = None, captcha: bool = False,
                         send_email: bool = False, two_factor_auth: bool = False,
@@ -266,6 +268,10 @@ class Authenticate:
             raise ValueError("Provider must be one of 'google' or 'microsoft'")
         if not st.session_state.get('authentication_status'):
             token = self.cookie_controller.get_cookie()
+            if token: #This is added to handle user closing browser without logging out
+                      # This forces the authentication process to use guest_login option below
+                if token['username'] in self.credentials['usernames']:
+                   token = None
             if token:
                 self.authentication_controller.login(token=token)
             time.sleep(self.attrs.get('login_sleep_time', params.PRE_LOGIN_SLEEP_TIME))
