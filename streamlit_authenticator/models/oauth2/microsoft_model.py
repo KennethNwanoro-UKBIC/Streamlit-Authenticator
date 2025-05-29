@@ -166,12 +166,12 @@ class MicrosoftModel:
             - If not authenticated, returns the authorization endpoint URL (str).
             - If authenticated, returns a dictionary containing user information.
         """
-        return self.login_microsoft()
-        #auth_code = st.query_params.get('code')
-        #if auth_code:
-            #user_info = self.get_microsoft_user_info(auth_code)
-            #if user_info:
-                #return user_info
-        #else:
-            #return self.login_microsoft()
-        #return None
+        
+        auth_code = st.query_params.get('code')
+        if auth_code:
+            user_info = self.get_microsoft_user_info(auth_code)
+            if user_info:
+                return user_info
+        else:
+            return self.login_microsoft()
+        return None
