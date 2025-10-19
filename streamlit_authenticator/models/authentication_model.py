@@ -463,6 +463,16 @@ class AuthenticationModel:
         for key in ['name', 'username', 'authentication_status', 'email', 'roles']:
             st.session_state.setdefault(key, None)
             st.session_state[key] = None
+
+        ########### Add this to reset session states to default values
+        defaultstates = Defaultstates()
+        keys = defaultstates.keys()
+        for key in keys:             
+             defaultvalue = defaultstates[key]
+             st.session_state.setdefault(key, defaultvalue)
+             st.session_state[key] = defaultvalue 
+         st.cache_data.clear()  
+        ################# End ###################
         if self.path:
             Helpers.update_config_file(self.path, 'credentials', self.credentials)
     def _record_failed_login_attempts(self, username: str, reset: bool = False) -> None:
